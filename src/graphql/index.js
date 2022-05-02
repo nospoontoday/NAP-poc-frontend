@@ -8,18 +8,18 @@ import {
 import { onError } from '@apollo/client/link/error';
 
 const errorLink = onError(({graphqlErrors, networkError}) => {
-if(graphqlErrors) {
-    graphqlErrors.forEach(({message, location, path}) => {
-    console.log(`Graphql error ${message}`);
-    });
-}
+    if(graphqlErrors) {
+        graphqlErrors.forEach(({message, location, path}) => {
+            console.log(`Graphql error ${message}`);
+        });
+    }
 
-if(networkError) console.log(`[Network error]: ${networkError}`);
+    if(networkError) console.log(`[Network error]: ${networkError}`);
 });
 
 const link = from([
-errorLink,
-new HttpLink({uri: "http://localhost:3500/graphql"})
+    errorLink,
+    new HttpLink({uri: "http://localhost:3500/graphql"})
 ]);
   
 export const client = new ApolloClient({
