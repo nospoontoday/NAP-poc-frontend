@@ -1,13 +1,14 @@
 import './App.css';
 import { ApolloProvider } from '@apollo/client';
 import { client } from './graphql';
-import GetEmployees from './components/GetEmployees';
+import Register from './components/Register';
 
 function App() {
   return (
     <ApolloProvider client={client}>
-      {" "}
-      <GetEmployees />
+      <main className="App">
+        <Register />
+      </main>
     </ApolloProvider>
   );
 }
