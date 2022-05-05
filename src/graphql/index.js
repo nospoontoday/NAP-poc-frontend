@@ -14,7 +14,7 @@ const errorLink = onError(({graphqlErrors, networkError}) => {
         });
     }
 
-    if(networkError) console.log(`[Network error]: ${networkError}`);
+    if(networkError) console.log(`[Network error]: ${JSON.stringify(networkError, null, 2)}`);
 });
 
 const link = from([
@@ -25,4 +25,5 @@ const link = from([
 export const client = new ApolloClient({
     cache: new InMemoryCache(),
     link: link,
+    credentials: 'include',
 });

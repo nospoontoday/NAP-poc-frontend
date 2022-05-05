@@ -1,12 +1,17 @@
 import { useRef, useState, useEffect } from 'react';
 import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
+import {
+    useMutation,
+    gql
+} from '@apollo/client';
+import { ValuesOfCorrectTypeRule } from 'graphql';
 //Form Validations
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 const Register = () => {
+
     const userRef = useRef();
     const errRef = useRef();
 
@@ -42,6 +47,17 @@ const Register = () => {
         setErrMsg('');
     }, [user, pwd, matchPwd])
 
+    const [register, { error }] = useMutation(REGISTER_USER, {
+        update(proxy, result) {
+            console.log(result);
+        },
+        variables: {
+            username: user,
+            password: pwd,
+            confirm_pwd: matchPwd
+        }
+    });
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -53,6 +69,9 @@ const Register = () => {
             return;
         }
         
+        const response = await register();
+
+        console.log(response);
     }
     
     return (
@@ -140,7 +159,7 @@ const Register = () => {
                     Must match the first password input field.
                 </p>
 
-                <button disabled={!validName || !validPwd || !validMatch ? true : false}>
+                <button type="submit" disabled={!validName || !validPwd || !validMatch ? true : false}>
                     Sign Up
                 </button>
                 <p>
@@ -153,5 +172,21 @@ const Register = () => {
         </section>
     )
 }
+
+const REGISTER_USER = gql`
+    mutation register(
+        $username: String!
+        $password: String!
+        $confirm_pwd: String!
+    ) {
+        register(
+            username: $username
+            password: $password
+            confirm_pwd: $confirm_pwd
+        ) {
+            username
+        }
+    }
+`
 
 export default Register
